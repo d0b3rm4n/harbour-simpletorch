@@ -61,7 +61,7 @@ Page {
     function toggleRectange() {
         if (morseSOS) {
             morseCounter++;
-            console.debug("morseCounter:" + morseCounter);
+//            console.debug("morseCounter:" + morseCounter);
             if (torchRectangle.color == "#ffffff") {
                 torchRectangle.color = "black";
             } else if (torchRectangle.color == "#000000"){
@@ -70,7 +70,7 @@ Page {
             switch(morseCounter)
             {
             case 1:
-                console.debug("01 - black - morseGapWord");
+//                console.debug("01 - black - morseGapWord");
                 torchTimer.interval = morseGapWord;
                 break;
             case 2:
@@ -78,14 +78,15 @@ Page {
             case 6:
             case 14:
             case 16:
-                console.debug(morseCounter + " - white - morseShort");
+//                console.debug(morseCounter + " - white - morseShort");
                 torchTimer.interval = morseShort;
                 torchBusyIndicator.running = false;
+                torchAboutToStartText.visible = false;
                 break;
             case 8:
             case 10:
             case 12:
-                console.debug(morseCounter +  " - white - morseLong");
+//                console.debug(morseCounter +  " - white - morseLong");
                 torchTimer.interval = morseLong;
                 break;
             case 3:
@@ -94,16 +95,16 @@ Page {
             case 11:
             case 15:
             case 17:
-                console.debug(morseCounter + " - black - morseGapDot");
+//                console.debug(morseCounter + " - black - morseGapDot");
                 torchTimer.interval = morseGapDot;
                 break;
             case 7:
             case 13:
-                console.debug(morseCounter + " - black - morseGapLetter");
+//                console.debug(morseCounter + " - black - morseGapLetter");
                 torchTimer.interval = morseGapLetter;
                 break;
             case 18:
-                console.debug("18 - white - morseShort");
+//                console.debug("18 - white - morseShort");
                 torchTimer.interval = morseShort;
                 morseCounter = 0;
                 break;
@@ -112,7 +113,7 @@ Page {
             }
             torchTimer.start();
         } else {
-            console.debug("Timer is running in vain...")
+//            console.debug("Timer is running in vain...")
             torchTimer.stop();
         }
     }
@@ -120,12 +121,15 @@ Page {
     function toggleTimer(){
         if (torchTimer.running) {
             morseSOS = false;
+            torchBusyIndicator.running = false;
+            torchAboutToStartText.visible = false;
             torchTimer.stop();
         } else {
             torchTimer.interval = startInterval;
             morseCounter = 0;
             morseSOS = true;
             torchBusyIndicator.running = true;
+            torchAboutToStartText.visible = true;
             torchTimer.start();
         }
         torchRectangle.color = "white";
@@ -139,7 +143,7 @@ Page {
         MouseArea {
             anchors.fill: parent
             onClicked: {
-                console.debug("tapped...");
+//                console.debug("tapped...");
                 toggleTimer();
             }
         }
@@ -148,6 +152,20 @@ Page {
             anchors.centerIn: parent
             size: BusyIndicatorSize.Large
             running: false
+        }
+        Label {
+            id: torchAboutToStartText
+            visible: false
+            anchors.bottom: torchBusyIndicator.top
+            anchors.bottomMargin: Theme.paddingLarge
+            anchors.left: parent.left
+            anchors.right: parent.right
+            horizontalAlignment: Text.AlignHCenter
+            wrapMode: Text.WordWrap
+            color: Theme.highlightColor
+            font.family: Theme.fontFamilyHeading
+            font.pixelSize: Theme.fontSizeExtraLarge
+            text: "SOS blinking starts\nin " + morseGapWord/1000  + "s"
         }
     }
     SimpleTorchScreenBlank{
