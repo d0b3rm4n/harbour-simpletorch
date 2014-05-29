@@ -70,8 +70,8 @@ Page {
             switch(morseCounter)
             {
             case 1:
-//                console.debug("01 - black - morseGapWord");
-                torchTimer.interval = morseGapWord;
+//                console.debug("01 - black - morseGapLetter");
+                torchTimer.interval = morseGapLetter
                 break;
             case 2:
             case 4:
@@ -91,17 +91,18 @@ Page {
                 break;
             case 3:
             case 5:
+            case 7:
             case 9:
             case 11:
+            case 13:
             case 15:
             case 17:
+                // case 7 and 13 (between: S and O; O and S)
+                // In SOS no morseGapLetter is used in between letters
+                // since it's treaded as one character aka prosign
+                // http://www.qsl.net/w8rit/prosigns.htm
 //                console.debug(morseCounter + " - black - morseGapDot");
                 torchTimer.interval = morseGapDot;
-                break;
-            case 7:
-            case 13:
-//                console.debug(morseCounter + " - black - morseGapLetter");
-                torchTimer.interval = morseGapLetter;
                 break;
             case 18:
 //                console.debug("18 - white - morseShort");
@@ -165,7 +166,7 @@ Page {
             color: Theme.highlightColor
             font.family: Theme.fontFamilyHeading
             font.pixelSize: Theme.fontSizeExtraLarge
-            text: "SOS blinking starts\nin " + morseGapWord/1000  + "s"
+            text: "SOS blinking starts\nin " + morseGapLetter/1000  + "s"
         }
     }
     SimpleTorchScreenBlank{
