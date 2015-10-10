@@ -17,7 +17,6 @@ INSTALLS = png-files
 OTHER_FILES += qml/harbour-simpletorch.qml \
     qml/cover/CoverPage.qml \
     rpm/harbour-simpletorch.spec \
-    rpm/harbour-simpletorch.yaml \
     harbour-simpletorch.desktop \
     qml/pages/FirstPage.qml \
     data/torch-001.png \
