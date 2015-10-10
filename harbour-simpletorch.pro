@@ -12,10 +12,16 @@ CONFIG += sailfishapp_qml
 png-files.path = /usr/share/harbour-simpletorch/data
 png-files.files = data/torch-001.png
 
-INSTALLS = png-files
+icon108.path  = /usr/share/icons/hicolor/108x108/apps
+icon108.files = data/108x108/harbour-simpletorch.png
+icon128.path  = /usr/share/icons/hicolor/128x128/apps
+icon128.files = data/128x128/harbour-simpletorch.png
+icon256.path  = /usr/share/icons/hicolor/256x256/apps
+icon256.files = data/256x256/harbour-simpletorch.png
 
-OTHER_FILES += data/torch-001.png \
-               rpm/harbour-simpletorch.spec \
+INSTALLS = png-files icon108 icon128 icon256
+
+OTHER_FILES += rpm/harbour-simpletorch.spec \
                qml/*.qml \
                qml/cover/*.qml \
                qml/pages/*.qml
