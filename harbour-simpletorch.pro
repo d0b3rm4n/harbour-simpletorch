@@ -7,21 +7,15 @@
 #         - desktop filename must be changed
 #         - icon definition filename in desktop file must be changed
 
-CONFIG += sailfishapp
+CONFIG += sailfishapp_qml
 
 png-files.path = /usr/share/harbour-simpletorch/data
-png-files.files = data/*.png
+png-files.files = data/torch-001.png
 
 INSTALLS = png-files
 
-OTHER_FILES += qml/harbour-simpletorch.qml \
-    qml/cover/CoverPage.qml \
-    rpm/harbour-simpletorch.spec \
-    harbour-simpletorch.desktop \
-    qml/pages/FirstPage.qml \
-    data/torch-001.png \
-    qml/pages/SimpleTorchScreenBlank.qml
-
-
-TEMPLATE = subdirs
-SUBDIRS = src
+OTHER_FILES += data/torch-001.png \
+               rpm/harbour-simpletorch.spec \
+               qml/*.qml \
+               qml/cover/*.qml \
+               qml/pages/*.qml
