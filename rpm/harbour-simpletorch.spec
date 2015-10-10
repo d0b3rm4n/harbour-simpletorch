@@ -6,7 +6,7 @@
 
 Name:           harbour-simpletorch
 Summary:        A really simple torch app
-Version:        0.5
+Version:        0.6
 Release:        1
 Group:          Qt/Qt
 License:        GPLv2
