@@ -24,4 +24,4 @@ OTHER_FILES += qml/harbour-simpletorch.qml \
 
 
 TEMPLATE = subdirs
-SUBDIRS = src/dbus src
+SUBDIRS = src
