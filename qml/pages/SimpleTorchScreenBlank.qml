@@ -24,8 +24,8 @@
  *                                                                         *
  ***************************************************************************/
 
-import QtQuick 2.0
-import harbour.simpletorch.dbus 1.0
+import QtQuick 2.2
+import org.nemomobile.dbus 2.0
 
 Timer {
     id: simpleTorchTimer
@@ -35,11 +35,10 @@ Timer {
     property DBusInterface _dbus: DBusInterface {
         id: simpleTorchDbus
 
-        destination: "com.nokia.mce"
+        service: "com.nokia.mce"
         path: "/com/nokia/mce/request"
         iface: "com.nokia.mce.request"
-
-        busType: DBusInterface.SystemBus
+        bus: DBus.SystemBus
     }
 
     onTriggered: simpleTorchDbus.call("req_display_blanking_pause", undefined)
