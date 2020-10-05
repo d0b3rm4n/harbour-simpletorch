@@ -38,6 +38,7 @@
 
 import QtQuick 2.2
 import Sailfish.Silica 1.0
+import QtQuick.LocalStorage 2.0
 
 Page {
     id: page
@@ -50,6 +51,31 @@ Page {
     property int morseGapWord: 7 * morseUnit
     property int startInterval: 50
     property bool morseSOS: false
+    property color torchColor: "white"
+
+    readonly property var torch_color_palette: [
+        // real world light colors, mostly from http://planetpixelemporium.com/tutorialpages/light.html
+        // sorted by lightness, https://www.hashbangcode.com/article/color-sorting-php
+        '#ffffff',  // white aka direct sunlight
+        '#fffffb',  // high noon sun
+        '#f4fffa',  // standard fluorescent
+
+        '#f2fcff',  // metal halide
+        '#fff1e0',  // halogen
+        '#d8f7ff',  // mercury vapor
+
+        '#ffd1b2',  // sodium vapor
+        '#fffaf4',  // carbon arc
+        '#ffd6aa',  // tungsten 100w
+
+        '#ffc58f',  // tungsten 40w
+        '#fd5e53',  // sunset orange, https://www.colorhexa.com/fd5e53
+        '#ffb74c',  // high pressure sodium
+
+        '#ff9329',  // candle
+        '#F31431',  // red alert, https://www.colourlovers.com/color/F31431/Red_Alert
+        '#a700ff',  // black light fluorescent
+    ]
 
     Timer {
         id: torchTimer
@@ -62,10 +88,10 @@ Page {
         if (morseSOS) {
             morseCounter++;
 //            console.debug("morseCounter:" + morseCounter);
-            if (torchRectangle.color == "#ffffff") {
+            if (torchRectangle.color != "#000000") {
                 torchRectangle.color = "black";
             } else if (torchRectangle.color == "#000000"){
-                torchRectangle.color = "white";
+                torchRectangle.color = torchColor
             }
             switch(morseCounter)
             {
@@ -133,13 +159,75 @@ Page {
             torchAboutToStartText.visible = true;
             torchTimer.start();
         }
-        torchRectangle.color = "white";
+        torchRectangle.color = torchColor
+    }
+
+    function _dbInit(db)
+    {
+        try {
+            db.transaction(function (tx) {
+                tx.executeSql('CREATE TABLE IF NOT EXISTS settings (key text, value text, PRIMARY KEY(key))')
+            })
+            db.changeVersion("", "1.0");
+        } catch (err) {
+            console.log("Error creating table in database: " + err)
+        };
+    }
+
+    function _dbGetHandle()
+    {
+        try {
+           var db = LocalStorage.openDatabaseSync("SimpleTorch", "1.0", "App settings", 32, _dbInit)
+        } catch (err) {
+            console.log("Error opening database: " + err)
+        }
+        return db
+    }
+
+    function applyColor() {
+        var db = _dbGetHandle();
+        return db.readTransaction(function(tx) {
+            var results = tx.executeSql('SELECT value FROM settings WHERE key = "color"')
+
+            if(results.rows.length === 0) {
+                torchColor = '#ffffff'
+                return
+            }
+            torchColor = results.rows.item(0).value
+        })
+    }
+
+    function saveColor() {
+        var db = _dbGetHandle();
+        db.transaction(function(tx) {
+            try {
+                var result = tx.executeSql('UPDATE settings SET value = ? WHERE key = "color"', [torchColor])
+                if (result.rowsAffected === 0) {
+                    tx.executeSql('INSERT INTO settings VALUES (?, ?)', ["color", torchColor])
+                }
+            } catch (e) {
+                console.error(e)
+            }
+        })
     }
 
     SilicaFlickable {
         anchors.fill: parent
 
-        PullDownMenu{
+        PullDownMenu {
+            MenuItem {
+                text: qsTr("Change color")
+                onClicked: {
+                    var dialog = pageStack.push("Sailfish.Silica.ColorPickerDialog")
+                    dialog.colors = torch_color_palette
+                    dialog.accepted.connect(function() {
+                        torchColor = dialog.color
+                        torchRectangle.color = torchColor
+                        saveColor()
+                    })
+                }
+            }
+
             MenuItem {
                  text: qsTr("Toggle morseing SOS")
                  onClicked: toggleTimer()
@@ -149,7 +237,7 @@ Page {
         Rectangle{
             id: torchRectangle
             anchors.fill: parent
-            color: "white"
+            color: torchColor
 
             BusyIndicator {
                 id: torchBusyIndicator
@@ -175,5 +263,9 @@ Page {
         SimpleTorchScreenBlank{
             activated: Qt.application.active
         }
+    }
+
+    Component.onCompleted: {
+        applyColor()
     }
 }
