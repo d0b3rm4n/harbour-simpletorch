@@ -136,40 +136,44 @@ Page {
         torchRectangle.color = "white";
     }
 
-    Rectangle{
-        id: torchRectangle
+    SilicaFlickable {
         anchors.fill: parent
-        color: "white"
 
-        MouseArea {
+        PullDownMenu{
+            MenuItem {
+                 text: qsTr("Toggle morseing SOS")
+                 onClicked: toggleTimer()
+             }
+        }
+
+        Rectangle{
+            id: torchRectangle
             anchors.fill: parent
-            onClicked: {
-//                console.debug("tapped...");
-                toggleTimer();
+            color: "white"
+
+            BusyIndicator {
+                id: torchBusyIndicator
+                anchors.centerIn: parent
+                size: BusyIndicatorSize.Large
+                running: false
+            }
+            Label {
+                id: torchAboutToStartText
+                visible: false
+                anchors.bottom: torchBusyIndicator.top
+                anchors.bottomMargin: Theme.paddingLarge
+                anchors.left: parent.left
+                anchors.right: parent.right
+                horizontalAlignment: Text.AlignHCenter
+                wrapMode: Text.WordWrap
+                color: Theme.highlightColor
+                font.family: Theme.fontFamilyHeading
+                font.pixelSize: Theme.fontSizeExtraLarge
+                text: "SOS blinking starts\nin " + morseGapLetter/1000  + "s"
             }
         }
-        BusyIndicator {
-            id: torchBusyIndicator
-            anchors.centerIn: parent
-            size: BusyIndicatorSize.Large
-            running: false
+        SimpleTorchScreenBlank{
+            activated: Qt.application.active
         }
-        Label {
-            id: torchAboutToStartText
-            visible: false
-            anchors.bottom: torchBusyIndicator.top
-            anchors.bottomMargin: Theme.paddingLarge
-            anchors.left: parent.left
-            anchors.right: parent.right
-            horizontalAlignment: Text.AlignHCenter
-            wrapMode: Text.WordWrap
-            color: Theme.highlightColor
-            font.family: Theme.fontFamilyHeading
-            font.pixelSize: Theme.fontSizeExtraLarge
-            text: "SOS blinking starts\nin " + morseGapLetter/1000  + "s"
-        }
-    }
-    SimpleTorchScreenBlank{
-        activated: Qt.application.active
     }
 }
