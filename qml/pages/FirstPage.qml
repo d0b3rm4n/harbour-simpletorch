@@ -91,7 +91,7 @@ Page {
             if (torchRectangle.color != "#000000") {
                 torchRectangle.color = "black";
             } else if (torchRectangle.color == "#000000"){
-                torchRectangle.color = torchColor
+                torchRectangle.color = "white"
             }
             switch(morseCounter)
             {
